@@ -10,6 +10,8 @@
 #include "bache.h"
 #include "Acantilado.h"
 #include "aceite.h"
+#include "nitro.h"
+#include "rampa.h"
 
 namespace Ui {
 class Carrera;
@@ -29,6 +31,7 @@ public:
     explicit Carrera(QWidget *parent = nullptr);
     ~Carrera();
     void agregarobs(short tipo,float x,float y);
+    void agregarram(float x, float y);
 
 private slots:
     void on_pushButton_clicked();
@@ -36,11 +39,13 @@ private slots:
 
 private:
     Obstaculo* obstaculos[100];
+    Rampa* rampas[50];
     QTimer* timer;
     Corredor jug;
-    bool tecla_izq, tecla_der, tecla_up, tecla_dw;
+    bool tecla_izq, tecla_der, tecla_up, tecla_dw,nitro;
     Ui::Carrera *ui;
     short n_obstaculos;
+    short n_rampas;
 };
 
 #endif // CARRERA_H

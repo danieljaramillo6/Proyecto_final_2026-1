@@ -1,13 +1,20 @@
 #include "aceite.h"
+#include <QDebug>
 
 Aceite::Aceite() {}
-Aceite::Aceite(float x, float y):Obstaculo(x,y,50,50){}
+Aceite::Aceite(float x, float y):Obstaculo(x,y,50,50){
+    sprite = QPixmap("C:/Users/danie/Documents/Proyecto_final/BMX_COWBOY_BEBOOP/aceite.png");
+    if(sprite.isNull()){
+        qDebug() << "no cargo la imagen";
+    }
+
+}
 
 void Aceite::dibujar(QPainter& painter,float cam_x){
     if(vivo){
         painter.setBrush(Qt::blue);
         painter.setPen(Qt::NoPen);
-        painter.drawRect(x-cam_x, y, ancho, alto);
+        painter.drawPixmap(x-cam_x, y, ancho, alto,sprite);
     }
     return;
 }

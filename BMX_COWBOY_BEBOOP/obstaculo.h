@@ -1,12 +1,14 @@
 #ifndef OBSTACULO_H
 #define OBSTACULO_H
 #include <QPainter>
+#include <QPixmap>
 class Obstaculo
 {
 protected:
     float x,y;
     int ancho,alto;
     bool vivo;
+    QPixmap sprite;
 public:
     Obstaculo();
     Obstaculo(float x, float y, int ancho, int alto, bool vivo = true);

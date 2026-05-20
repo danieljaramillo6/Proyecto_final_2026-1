@@ -31,6 +31,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         bache.h bache.cpp
         aceite.h aceite.cpp
         acantilado.h acantilado.cpp
+        nitro.h nitro.cpp
+        rampa.h rampa.cpp
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET BMX_COWBOY_BEBOOP APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

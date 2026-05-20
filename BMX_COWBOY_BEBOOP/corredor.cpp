@@ -7,8 +7,13 @@ Corredor::Corredor() {
     y=300.0;
     vel=0;
     velmax=10;
-    nitro=true;
+    nitro=0;
+    vel_z=10;
     cambiando_carril=false;
+    z=0;
+    volando=false;
+    imprimible=true;
+    f_bloq=0;
 }
 
 void Corredor::cambiarcarril(bool up, bool dw){
@@ -34,7 +39,7 @@ void Corredor::pintar(QPainter &painter){
     if(!imprimible)return;
     painter.setBrush(Qt::gray);
     painter.setPen(Qt::NoPen);
-    painter.drawRect(x-cam_x, y, 10, 15);
+    painter.drawRect(x-cam_x, y-z, 10, 15);
 }
 void Corredor::acelerar(bool der,bool iz){
     if (!der && !iz) vel=vel*0.987;
@@ -62,11 +67,19 @@ void Corredor::intobj(short act,float x_){
     case 3:
         vel=0;
         bloquear(30);
+        break;
     case 4:
         vel=0;
         x=x_;
         bloquear(60);
         imprimible=false;
+        break;
+    case 5:
+        if (nitro<3){
+        nitro++;
+        }
+
+        break;
     default:
         break;
     }
@@ -75,16 +88,49 @@ void Corredor::intobj(short act,float x_){
 void Corredor::bloquear(short frames){
     f_bloq=frames;
 }
-void Corredor::mover(){
+
+
+void Corredor::mover(bool espacio){
     if (f_bloq>0){
         f_bloq--;
         return;
     }
+    if (espacio && nitro>0){
+        vel+=20;
+        nitro--;
+        f_nitro=30;
+    }
+    if (f_nitro>0){
+        velmax=20;
+        f_nitro--;
+    }else velmax=10;
+
     imprimible=true;
     x+=vel;
     cam_x+=vel;
 }
 
+void Corredor::caer(){
+    if (volando){
+    vel_z-=0.9;
+    z+=vel_z;
+    if (z<=0){
+        z=0;
+        vel_z=10;
+        volando=false;
+    }
+    }
+    return;
+}
+
+void Corredor::estavolando(bool colision){
+    if(!colision && z>0){
+        volando=true;
+        return;
+    }
+    else if(colision) volando =false;
+    return;
+}
 float Corredor::getcam_x(){
     return cam_x;
 }
@@ -99,5 +145,10 @@ float Corredor::getY(){
 
 void Corredor::setvelmax(double nueva){
     velmax=nueva;
+    return;
+}
+
+void Corredor::setZ(float new_z){
+    z=new_z;
     return;
 }
