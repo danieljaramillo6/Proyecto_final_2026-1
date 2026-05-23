@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>sprites/123xsheet.png</file>
+        <file>sprites/aceite.png</file>
+        <file>sprites/bache.png</file>
+        <file>sprites/barrera.png</file>
+        <file>sprites/nitro.png</file>
+        <file>sprites/pista.jpg</file>
+        <file>sprites/pozo.png</file>
+        <file>sprites/rampa.png</file>
+    </qresource>
+</RCC>

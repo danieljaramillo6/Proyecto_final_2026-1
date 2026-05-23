@@ -14,16 +14,17 @@ Corredor::Corredor() {
     volando=false;
     imprimible=true;
     f_bloq=0;
+    act_nitro=false;
 }
 
 void Corredor::cambiarcarril(bool up, bool dw){
-    if(up && !dw && !cambiando_carril){
+    if(up && !dw && !cambiando_carril && z==0){
         if(y > 180){
             y -= 120;
             cambiando_carril = true;
         }
     }
-    else if(!up && dw && !cambiando_carril){
+    else if(!up && dw && !cambiando_carril && z==0){
         if(y < 540){
             y += 120;
             cambiando_carril = true;
@@ -37,9 +38,10 @@ void Corredor::cambiarcarril(bool up, bool dw){
 
 void Corredor::pintar(QPainter &painter){
     if(!imprimible)return;
-    painter.setBrush(Qt::gray);
+    painter.setBrush(Qt::green);
     painter.setPen(Qt::NoPen);
     painter.drawRect(x-cam_x, y-z, 10, 15);
+    qDebug()<<nitro;
 }
 void Corredor::acelerar(bool der,bool iz){
     if (!der && !iz) vel=vel*0.987;
@@ -48,7 +50,7 @@ void Corredor::acelerar(bool der,bool iz){
         if (vel>velmax)vel=velmax;
         else if(vel == 0)vel=0.5;
     }
-    else if(!der && iz) {
+    else if(!der && iz && !volando) {
         vel= vel*0.9;
         if(vel < 0.5) vel = 0;
     }
@@ -58,6 +60,7 @@ void Corredor::acelerar(bool der,bool iz){
 void Corredor::intobj(short act,float x_){
     switch(act){
     case 1:
+        if(vel>10)break;
         vel=0;
         break;
     case 2:
@@ -69,6 +72,7 @@ void Corredor::intobj(short act,float x_){
         bloquear(30);
         break;
     case 4:
+        if(z>0)break;
         vel=0;
         x=x_;
         bloquear(60);
@@ -95,10 +99,12 @@ void Corredor::mover(bool espacio){
         f_bloq--;
         return;
     }
-    if (espacio && nitro>0){
+    if (f_nitro==0)act_nitro=false;
+    if (espacio && nitro>0 && !act_nitro){
         vel+=20;
         nitro--;
         f_nitro=30;
+        act_nitro=true;
     }
     if (f_nitro>0){
         velmax=20;
@@ -151,4 +157,8 @@ void Corredor::setvelmax(double nueva){
 void Corredor::setZ(float new_z){
     z=new_z;
     return;
+}
+
+int Corredor::getnitro(){
+    return nitro;
 }

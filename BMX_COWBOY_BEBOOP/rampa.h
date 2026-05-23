@@ -2,11 +2,13 @@
 #define RAMPA_H
 #include "corredor.h"
 #include <QPainter>
+#include <QPixmap>
 
 class Rampa
 {
 private:
     float x,y,alto,ancho;
+    QPixmap sprite;
 public:
     Rampa();
     Rampa(float x,float y);

@@ -7,6 +7,10 @@ Carrera::Carrera(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Carrera)
 {
+    sprite_pista=QPixmap(":/sprites/pista.jpg");
+    n_nitro=QPixmap(":/sprites/123xsheet.png");
+    nitro_sprite=QPixmap(":/sprites/nitro.png");
+
     n_obstaculos=0;
     n_rampas=0;
     ui->setupUi(this);
@@ -22,35 +26,54 @@ Carrera::Carrera(QWidget *parent)
     jug=Corredor();
 
     //obstaculos;
-    agregarobs(1,1000.0f,180.0f);
-    agregarobs(3,2000.0f,300.0f);
-    agregarobs(1,3000.0f,420.0f);
-    agregarobs(3,4000.0f,540.0f);
-    agregarobs(3,5000.0f,180.0f);
-    agregarobs(3,6000.0f,300.0f);
-    agregarobs(3,7000.0f,420.0f);
+
+    agregarobs(4,1100.0f,420.0f);
     agregarobs(4,8000.0f,540.0f);
-    agregarobs(3,1000.0f,300.0f);
-    agregarobs(3,2000.0f,420.0f);
-    agregarobs(3,3000.0f,540.0f);
-    agregarobs(3,4000.0f,180.0f);
-    agregarobs(3,5000.0f,300.0f);
-    agregarobs(3,6000.0f,420.0f);
-    agregarobs(3,7000.0f,540.0f);
-    agregarobs(3,8000.0f,180.0f);
-    agregarobs(5,500,300);
-    agregarobs(5,1500,300);
-    agregarobs(5,2500,300);
+
+
+    agregarobs(4,3000.0f,540.0f);
+
+    agregarobs(4,5000.0f,300.0f);
+
+
+    agregarobs(4,8000.0f,180.0f);
+
+    agregarobs(4,1500,300);
+    agregarobs(2,2500,300);
     agregarobs(5,3500,300);
     agregarobs(5,4500,540);
     agregarobs(5,5500,420);
     agregarobs(5,6500,300);
-    agregarobs(5,7500,300);
-    agregarobs(5,8500,300);
-    agregarobs(5,9500,300);
-    agregarobs(5,10500,540);
-    agregarobs(5,11500,420);
+    agregarobs(1,7500,300);
+    agregarobs(1,8500,300);
+    agregarobs(1,9500,300);
+    agregarobs(1,10500,540);
+    agregarobs(1,11500,420);
+    agregarram(1000,180);
+    agregarram(1000,300);
     agregarram(1000,420);
+    agregarram(1000,540);
+    agregarram(4000,180);
+    agregarram(4000,300);
+    agregarram(4000,420);
+    agregarram(4000,540);
+    agregarram(1000,180);
+    agregarram(1000,300);
+    agregarram(1000,420);
+    agregarram(1000,540);
+    agregarram(8000,180);
+    agregarram(8000,300);
+    agregarram(8000,420);
+    agregarram(8000,540);
+    agregarram(12000,180);
+    agregarram(12000,300);
+    agregarram(12000,420);
+    agregarram(12000,540);
+    agregarram(16000,180);
+    agregarram(16000,300);
+    agregarram(16000,420);
+    agregarram(16000,540);
+
 }
 
 void Carrera::onTimer(){
@@ -107,13 +130,16 @@ void Carrera::keyReleaseEvent(QKeyEvent* event){
 
 void Carrera::paintEvent(QPaintEvent *event){
     QPainter painter(this);
+    dibujarPista(painter);
+    dibujarnitros(painter);
 
-    for (int i=0;i<n_obstaculos;i++){
-        obstaculos[i]->dibujar(painter,jug.getcam_x());
-    }
     for (int i=0;i<n_rampas;i++){
         rampas[i]->dibujar(painter,jug.getcam_x());
     }
+    for (int i=0;i<n_obstaculos;i++){
+        obstaculos[i]->dibujar(painter,jug.getcam_x());
+    }
+
     jug.pintar(painter);
 }
 
@@ -143,5 +169,22 @@ void Carrera::agregarobs(short tipo,float x,float y){
 void Carrera::agregarram(float x, float y){
     if (n_rampas>=50)return;
     rampas[n_rampas++]=new Rampa(x,y);
+    return;
+}
+
+void Carrera::dibujarPista(QPainter& painter){
+    int ancho_tile = sprite_pista.width();
+    int offset = (int)jug.getcam_x() % ancho_tile;
+
+    for(int x = -offset; x < width() + ancho_tile; x += ancho_tile){
+        painter.drawPixmap(x, 0, ancho_tile, height(), sprite_pista);
+    }
+}
+void Carrera::dibujarnitros(QPainter &painter){
+    painter.drawPixmap(50,590,80,80,nitro_sprite);
+    if (jug.getnitro()==1)painter.drawPixmap(120,610,50,50,n_nitro,0,0,36,59);
+    else if (jug.getnitro()==2)painter.drawPixmap(120,610,50,50,n_nitro,72,0,36,59);
+    else if (jug.getnitro()==3)painter.drawPixmap(120,610,50,50,n_nitro,108,0,36,59);
+    else painter.drawPixmap(120,610,50,50,n_nitro,36,0,36,59);
     return;
 }

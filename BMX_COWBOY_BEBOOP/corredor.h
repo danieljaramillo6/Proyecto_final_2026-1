@@ -19,6 +19,7 @@ private:
     bool imprimible;
     bool volando;
     double vel_z;
+    bool act_nitro;
 public:
     Corredor();
     void cambiarcarril(bool up,bool dw);
@@ -35,6 +36,7 @@ public:
     void bloquear(short frames);
     void caer();
     void estavolando(bool colision);
+    int getnitro();
 
 };
 

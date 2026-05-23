@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QTimer>
+#include <QPainter>
+#include <QPixmap>
 #include "corredor.h"
 #include <QVector>
 #include "obstaculo.h"
@@ -32,12 +34,17 @@ public:
     ~Carrera();
     void agregarobs(short tipo,float x,float y);
     void agregarram(float x, float y);
+    void dibujarPista(QPainter& painter);
+    void dibujarnitros(QPainter& painter);
 
 private slots:
     void on_pushButton_clicked();
     void onTimer();
 
 private:
+    QPixmap sprite_pista;
+    QPixmap n_nitro;
+    QPixmap nitro_sprite;
     Obstaculo* obstaculos[100];
     Rampa* rampas[50];
     QTimer* timer;

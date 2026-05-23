@@ -1,12 +1,17 @@
 #include "bache.h"
 
 Bache::Bache() {}
-Bache::Bache(float x, float y):Obstaculo(x,y,50,50){}
+Bache::Bache(float x, float y):Obstaculo(x,y,50,50){
+    sprite = QPixmap(":/sprites/bache.png");
+    if(sprite.isNull()){
+        qDebug() << "no cargo la imagen";
+    }
+}
 void Bache::dibujar(QPainter& painter,float cam_x){
     if(vivo){
         painter.setBrush(Qt::yellow);
         painter.setPen(Qt::NoPen);
-        painter.drawRect(x-cam_x, y, ancho, alto);
+        painter.drawPixmap(x-cam_x, y-40, ancho+40, alto+50,sprite);
     }
     return;
 }

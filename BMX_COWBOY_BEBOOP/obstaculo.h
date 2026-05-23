@@ -2,6 +2,7 @@
 #define OBSTACULO_H
 #include <QPainter>
 #include <QPixmap>
+#include <QDebug>
 class Obstaculo
 {
 protected:

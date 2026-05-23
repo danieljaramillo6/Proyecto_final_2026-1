@@ -1,13 +1,18 @@
 #include "nitro.h"
 
 Nitro::Nitro() {}
-Nitro::Nitro(float x, float y):Obstaculo(x,y,50,50){}
+Nitro::Nitro(float x, float y):Obstaculo(x,y,50,50){
+    sprite = QPixmap(":/sprites/nitro.png");
+    if(sprite.isNull()){
+        qDebug() << "no cargo la imagen";
+    }
+}
 
 void Nitro::dibujar(QPainter& painter,float cam_x){
     if(vivo){
         painter.setBrush(Qt::darkBlue);
         painter.setPen(Qt::NoPen);
-        painter.drawEllipse(x-cam_x, y, ancho, alto);
+        painter.drawPixmap(x-cam_x, y-20, ancho, alto,sprite);
     }
     return;
 }

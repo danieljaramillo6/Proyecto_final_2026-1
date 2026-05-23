@@ -33,6 +33,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         acantilado.h acantilado.cpp
         nitro.h nitro.cpp
         rampa.h rampa.cpp
+        recursos.qrc
 
     )
 # Define target properties for Android with Qt 6 as:

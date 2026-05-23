@@ -7,6 +7,7 @@ Rampa::Rampa(float x, float y){
     this->y=y;
     ancho=100;
     alto=100;
+    sprite=QPixmap(":/sprites/rampa.png");
 }
 
 bool Rampa::arriba_rampa(float px,float py, float pancho,float palto){
@@ -22,12 +23,8 @@ void Rampa::actz(Corredor &corredor){
 }
 
 void Rampa::dibujar(QPainter &painter,float camX){
-    QPolygon triangulo;
-    triangulo << QPoint(x - camX, y + alto)        // esquina inferior izquierda
-              << QPoint(x - camX + ancho, y + alto) // esquina inferior derecha
-              << QPoint(x - camX + ancho, y);        // punta superior derecha
 
     painter.setBrush(Qt::gray);
     painter.setPen(Qt::NoPen);
-    painter.drawPolygon(triangulo);
+    painter.drawPixmap(x-camX, y-135, ancho+20, alto+140,sprite);
 }
