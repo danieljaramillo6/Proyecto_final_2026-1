@@ -8,5 +8,11 @@
         <file>sprites/pista.jpg</file>
         <file>sprites/pozo.png</file>
         <file>sprites/rampa.png</file>
+        <file>sprites/spritecaido.png</file>
+        <file>sprites/spikesheet.png</file>
+        <file>mapa.txt</file>
+        <file>sprites/linea_meta.png</file>
+        <file>sprites/victory.png</file>
+        <file>sprites/lose.png</file>
     </qresource>
 </RCC>

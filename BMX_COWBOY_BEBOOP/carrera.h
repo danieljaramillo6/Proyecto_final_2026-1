@@ -14,6 +14,7 @@
 #include "aceite.h"
 #include "nitro.h"
 #include "rampa.h"
+#include "enemigo.h"
 
 namespace Ui {
 class Carrera;
@@ -36,6 +37,7 @@ public:
     void agregarram(float x, float y);
     void dibujarPista(QPainter& painter);
     void dibujarnitros(QPainter& painter);
+    void cargarMapa();
 
 private slots:
     void on_pushButton_clicked();
@@ -45,14 +47,20 @@ private:
     QPixmap sprite_pista;
     QPixmap n_nitro;
     QPixmap nitro_sprite;
-    Obstaculo* obstaculos[100];
+    QPixmap linea_meta;
+    QPixmap victory;
+    QPixmap lose;
+    Obstaculo* obstaculos[200];
     Rampa* rampas[50];
     QTimer* timer;
     Corredor jug;
+    Enemigo enemigo;
     bool tecla_izq, tecla_der, tecla_up, tecla_dw,nitro;
     Ui::Carrera *ui;
     short n_obstaculos;
     short n_rampas;
+    short x_meta;
+    bool final;
 };
 
 #endif // CARRERA_H

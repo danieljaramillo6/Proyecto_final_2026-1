@@ -16,9 +16,11 @@ public:
     bool estavivo();
     void matar();
     virtual void dibujar(QPainter& painter,float cam_x);
-    virtual short colisiona(float x,float y,int pancho,int palto);
+    virtual short colisiona(float x,float y,float z,int pancho,int palto);
     float getX();
+    float getY();
     int getancho();
+    int getAlto() const { return alto; }
 };
 
 #endif // OBSTACULO_H

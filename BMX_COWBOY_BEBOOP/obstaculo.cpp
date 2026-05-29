@@ -20,7 +20,7 @@ void Obstaculo::dibujar(QPainter &painter, float cam_x){
     return;
 }
 
-short Obstaculo::colisiona(float x, float y,int pancho,int palto){
+short Obstaculo::colisiona(float x, float y,float z,int pancho,int palto){
     return 0;
 }
 
@@ -30,4 +30,8 @@ float Obstaculo::getX(){
 
 int Obstaculo::getancho(){
     return ancho;
+}
+
+float Obstaculo::getY(){
+    return y;
 }

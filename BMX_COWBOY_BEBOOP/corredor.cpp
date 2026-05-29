@@ -6,7 +6,7 @@ Corredor::Corredor() {
     cam_x=0;
     y=300.0;
     vel=0;
-    velmax=10;
+    velmax=20;
     nitro=0;
     vel_z=10;
     cambiando_carril=false;
@@ -14,10 +14,24 @@ Corredor::Corredor() {
     volando=false;
     imprimible=true;
     f_bloq=0;
+    f_nitro=0;
     act_nitro=false;
+    caido=false;
+    sprite=QPixmap(":/sprites/spikesheet.png");
+    sprite_caido=QPixmap(":/sprites/spritecaido.png");
+    if(sprite_caido.isNull()){
+        qDebug() << "no cargo la imagen";
+    }
+    primero=true;
+    acelerando=false;
+    n_sprite=0;
+    frame=0;
+    termino=false;
 }
 
 void Corredor::cambiarcarril(bool up, bool dw){
+    if (termino)return;
+    if (f_bloq>0)return;
     if(up && !dw && !cambiando_carril && z==0){
         if(y > 180){
             y -= 120;
@@ -38,29 +52,54 @@ void Corredor::cambiarcarril(bool up, bool dw){
 
 void Corredor::pintar(QPainter &painter){
     if(!imprimible)return;
-    painter.setBrush(Qt::green);
-    painter.setPen(Qt::NoPen);
-    painter.drawRect(x-cam_x, y-z, 10, 15);
-    qDebug()<<nitro;
+    if(termino){
+        painter.drawPixmap(x-cam_x,y-z-120,160,160,sprite,0,0,128,128);
+        return;
+    }
+    if(caido){
+        painter.drawPixmap(x-cam_x,y-120,160,160,sprite_caido);
+        return;
+    }
+    if(f_nitro>0){
+        painter.drawPixmap(x-cam_x,y-z-120,160,160,sprite,0,128,128,128);
+        return;
+    }
+    if(acelerando){
+        if(n_sprite>3) n_sprite=0;
+        painter.drawPixmap(x-cam_x, y-z-120, 160, 160,sprite,128*n_sprite,0,128,128);
+        if(frame==8){
+        n_sprite++;
+        frame=0;
+        }
+        else frame++;
+    }
+    else painter.drawPixmap(x-cam_x, y-z-120, 160, 160,sprite,0,0,128,128);
+
 }
 void Corredor::acelerar(bool der,bool iz){
-    if (!der && !iz) vel=vel*0.987;
-    else if (der && !iz){
+    if (!der && !iz){//inercia
+        vel=vel*0.987;
+        acelerando=false;
+    }
+    else if (der && !iz){//acelerar
         vel=vel*1.2;
         if (vel>velmax)vel=velmax;
         else if(vel == 0)vel=0.5;
+        acelerando=true;
     }
-    else if(!der && iz && !volando) {
+    else if(!der && iz && !volando) {//frenar
         vel= vel*0.9;
         if(vel < 0.5) vel = 0;
+        acelerando=false;
     }
     return;
 }
 
 void Corredor::intobj(short act,float x_){
+    if(z>0)return;
     switch(act){
     case 1:
-        if(vel>10)break;
+        if(vel>20)break;
         vel=0;
         break;
     case 2:
@@ -70,15 +109,17 @@ void Corredor::intobj(short act,float x_){
     case 3:
         vel=0;
         bloquear(30);
+        caido=true;
         break;
     case 4:
-        if(z>0)break;
+
         vel=0;
         x=x_;
         bloquear(60);
         imprimible=false;
         break;
     case 5:
+
         if (nitro<3){
         nitro++;
         }
@@ -95,7 +136,9 @@ void Corredor::bloquear(short frames){
 
 
 void Corredor::mover(bool espacio){
+    if (termino)return;
     if (f_bloq>0){
+        f_nitro=0;
         f_bloq--;
         return;
     }
@@ -107,10 +150,10 @@ void Corredor::mover(bool espacio){
         act_nitro=true;
     }
     if (f_nitro>0){
-        velmax=20;
+        velmax=35;
         f_nitro--;
     }else velmax=10;
-
+    caido=false;
     imprimible=true;
     x+=vel;
     cam_x+=vel;
@@ -161,4 +204,20 @@ void Corredor::setZ(float new_z){
 
 int Corredor::getnitro(){
     return nitro;
+}
+
+float Corredor::getZ(){
+    return z;
+}
+
+void Corredor::final(){
+    termino=true;
+}
+
+void Corredor::setPos(bool pos){
+    primero=pos;
+}
+
+bool Corredor::getPos()const{
+    return primero;
 }

@@ -16,7 +16,7 @@ void Bache::dibujar(QPainter& painter,float cam_x){
     return;
 }
 
-short Bache::colisiona(float px, float py, int pancho, int palto){
+short Bache::colisiona(float px, float py,float pz, int pancho, int palto){
     if (px + pancho > x && px < x + ancho && py + palto > y && py < y + alto && vivo){
         return 2;
     }

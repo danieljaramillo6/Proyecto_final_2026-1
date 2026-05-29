@@ -18,13 +18,11 @@ bool Rampa::arriba_rampa(float px,float py, float pancho,float palto){
 }
 
 void Rampa::actz(Corredor &corredor){
+    if (corredor.getZ()>corredor.getX()-x)return;
     corredor.setZ(corredor.getX()-x);
     return;
 }
 
 void Rampa::dibujar(QPainter &painter,float camX){
-
-    painter.setBrush(Qt::gray);
-    painter.setPen(Qt::NoPen);
     painter.drawPixmap(x-camX, y-135, ancho+20, alto+140,sprite);
 }

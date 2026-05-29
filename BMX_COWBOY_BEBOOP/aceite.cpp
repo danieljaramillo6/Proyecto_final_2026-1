@@ -19,9 +19,9 @@ void Aceite::dibujar(QPainter& painter,float cam_x){
     return;
 }
 
-short Aceite::colisiona(float px, float py,int pancho,int palto){
+short Aceite::colisiona(float px, float py,float pz,int pancho,int palto){
     if (px + pancho > x && px < x + ancho && py + palto > y && py < y + alto && vivo){
-        vivo = false;
+        if(pz==0)vivo = false;
         return 3;
     }
     return 0;

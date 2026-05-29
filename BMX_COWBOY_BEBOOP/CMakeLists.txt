@@ -34,6 +34,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         nitro.h nitro.cpp
         rampa.h rampa.cpp
         recursos.qrc
+        enemigo.h enemigo.cpp
 
     )
 # Define target properties for Android with Qt 6 as:

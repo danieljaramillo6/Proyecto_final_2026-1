@@ -2,6 +2,7 @@
 #include "ui_carrera.h"
 #include "corredor.h"
 #include <QKeyEvent>
+#include <QFile>
 
 Carrera::Carrera(QWidget *parent)
     : QWidget(parent)
@@ -10,7 +11,9 @@ Carrera::Carrera(QWidget *parent)
     sprite_pista=QPixmap(":/sprites/pista.jpg");
     n_nitro=QPixmap(":/sprites/123xsheet.png");
     nitro_sprite=QPixmap(":/sprites/nitro.png");
-
+    linea_meta=QPixmap(":/sprites/linea_meta.png");
+    victory=QPixmap(":/sprites/victory.png");
+    lose=QPixmap(":/sprites/lose.png");
     n_obstaculos=0;
     n_rampas=0;
     ui->setupUi(this);
@@ -24,55 +27,12 @@ Carrera::Carrera(QWidget *parent)
     connect(timer, &QTimer::timeout, this, &Carrera::onTimer);
     timer->start(16);
     jug=Corredor();
-
-    //obstaculos;
-
-    agregarobs(4,1100.0f,420.0f);
-    agregarobs(4,8000.0f,540.0f);
-
-
-    agregarobs(4,3000.0f,540.0f);
-
-    agregarobs(4,5000.0f,300.0f);
-
-
-    agregarobs(4,8000.0f,180.0f);
-
-    agregarobs(4,1500,300);
-    agregarobs(2,2500,300);
-    agregarobs(5,3500,300);
-    agregarobs(5,4500,540);
-    agregarobs(5,5500,420);
-    agregarobs(5,6500,300);
-    agregarobs(1,7500,300);
-    agregarobs(1,8500,300);
-    agregarobs(1,9500,300);
-    agregarobs(1,10500,540);
-    agregarobs(1,11500,420);
-    agregarram(1000,180);
-    agregarram(1000,300);
-    agregarram(1000,420);
-    agregarram(1000,540);
-    agregarram(4000,180);
-    agregarram(4000,300);
-    agregarram(4000,420);
-    agregarram(4000,540);
-    agregarram(1000,180);
-    agregarram(1000,300);
-    agregarram(1000,420);
-    agregarram(1000,540);
-    agregarram(8000,180);
-    agregarram(8000,300);
-    agregarram(8000,420);
-    agregarram(8000,540);
-    agregarram(12000,180);
-    agregarram(12000,300);
-    agregarram(12000,420);
-    agregarram(12000,540);
-    agregarram(16000,180);
-    agregarram(16000,300);
-    agregarram(16000,420);
-    agregarram(16000,540);
+    final=false;
+    qDebug() << "antes de enemigo";
+    enemigo = Enemigo(500, 300, 3);
+    qDebug() << "despues de enemigo";
+    cargarMapa();
+    qDebug() << "despues de cargarMapa";
 
 }
 
@@ -82,7 +42,7 @@ void Carrera::onTimer(){
     jug.acelerar(tecla_der,tecla_izq);
 
     for(int i = 0; i < n_obstaculos; i++){
-        short resultado = obstaculos[i]->colisiona(jug.getX(), jug.getY(),10,15);
+        short resultado = obstaculos[i]->colisiona(jug.getX(), jug.getY(),jug.getZ(),10,15);
         if(resultado != 0){
             jug.intobj(resultado, obstaculos[i]->getX()+obstaculos[i]->getancho());
         }
@@ -96,6 +56,43 @@ void Carrera::onTimer(){
             break;
         }
     }
+    short col_enemigo = 0;
+    for(int i = 0; i < n_obstaculos; i++){
+        short r = obstaculos[i]->colisiona(
+            enemigo.getX(),
+            enemigo.getHitboxY(),
+            enemigo.getZ(),
+            enemigo.getHitboxAncho(),
+            enemigo.getHitboxAlto()
+            );
+        if(r != 0){
+            col_enemigo = r;
+            enemigo.intobj(r,obstaculos[i]->getX()+obstaculos[i]->getancho());
+        }
+    }
+    bool enrampae=false;
+    for (int i=0;i<n_rampas;i++){
+        if (rampas[i]->arriba_rampa(enemigo.getX(),enemigo.getY(),10,15)){
+            rampas[i]->actz(enemigo);
+            enrampae=true;
+            break;
+        }
+    }
+    enemigo.actualizar(col_enemigo, obstaculos, n_obstaculos);
+    if (jug.getX()>x_meta){
+        jug.final();
+        final=true;
+    }
+    if(enemigo.getX()>x_meta){
+        enemigo.final();
+    }
+    if (!final){
+        bool first = jug.getX() > enemigo.getX();
+        jug.setPos(first);
+        qDebug()<<first;
+    }
+    enemigo.estavolando(enrampae);
+    enemigo.caer();
     jug.estavolando(enrampa);
     jug.caer();
     jug.mover(nitro);
@@ -130,6 +127,7 @@ void Carrera::keyReleaseEvent(QKeyEvent* event){
 
 void Carrera::paintEvent(QPaintEvent *event){
     QPainter painter(this);
+
     dibujarPista(painter);
     dibujarnitros(painter);
 
@@ -141,10 +139,18 @@ void Carrera::paintEvent(QPaintEvent *event){
     }
 
     jug.pintar(painter);
+    enemigo.setcam_x(jug.getcam_x());
+    enemigo.pintar(painter);
+    if (final && jug.getPos()==true){
+        painter.drawPixmap(0,100,1200,400,victory);
+    }
+    else if(final && jug.getPos()==false){
+        painter.drawPixmap(0,100,1200,400,lose);
+    }
 }
 
 void Carrera::agregarobs(short tipo,float x,float y){
-    if (n_obstaculos>=100)return;//100 es el numero de obstaculos que voy a añadir
+    if (n_obstaculos>=200)return;//100 es el numero de obstaculos que voy a añadir
     switch(tipo){
     case 1:
         obstaculos[n_obstaculos++]=new Barrera(x,y);
@@ -179,7 +185,9 @@ void Carrera::dibujarPista(QPainter& painter){
     for(int x = -offset; x < width() + ancho_tile; x += ancho_tile){
         painter.drawPixmap(x, 0, ancho_tile, height(), sprite_pista);
     }
+    painter.drawPixmap(x_meta-jug.getcam_x(),118,64,490,linea_meta);
 }
+
 void Carrera::dibujarnitros(QPainter &painter){
     painter.drawPixmap(50,590,80,80,nitro_sprite);
     if (jug.getnitro()==1)painter.drawPixmap(120,610,50,50,n_nitro,0,0,36,59);
@@ -187,4 +195,32 @@ void Carrera::dibujarnitros(QPainter &painter){
     else if (jug.getnitro()==3)painter.drawPixmap(120,610,50,50,n_nitro,108,0,36,59);
     else painter.drawPixmap(120,610,50,50,n_nitro,36,0,36,59);
     return;
+}
+
+void Carrera::cargarMapa(){
+    QFile archivo(":/mapa.txt");
+    archivo.open(QIODevice::ReadOnly);
+    QString datos = archivo.readAll();
+    archivo.close();
+    QStringList lineas = datos.split("\n");
+
+    for(int i = 0; i < lineas.size(); i++){
+        QStringList campos = lineas[i].split(",");
+
+        if(campos.size() < 3) continue; // linea invalida
+
+        short tipo = campos[0].toShort();
+        float x    = campos[1].toFloat();
+        float y    = campos[2].toFloat();
+
+        if(tipo >= 1 && tipo <= 5){
+            agregarobs(tipo, x, y);
+        }
+        else if(tipo == 6){
+            agregarram(x, y);
+        }
+        else if(tipo == 7){
+            x_meta=x;
+        }
+    }
 }
