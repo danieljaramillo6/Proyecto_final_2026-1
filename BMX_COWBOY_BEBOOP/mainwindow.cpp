@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "carrera.h"
+#include "bmx.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -25,3 +26,13 @@ void MainWindow::on_pushButton_clicked()
     });
 }
 
+void MainWindow::on_pushButton_2_clicked()
+{
+    BMX *b = new BMX();
+    b->show();
+    this->hide();
+    connect(b, &BMX::volver, this, [this, b](){
+        b->close();
+        this->show();
+    });
+}
