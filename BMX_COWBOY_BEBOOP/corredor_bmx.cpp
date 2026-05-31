@@ -3,16 +3,16 @@
 Corredor_bmx::Corredor_bmx() {
 
     x          = 30;
-    y          = 300;
+    y          = 605;
 
     vel        = 0;
     velmax     = 10;
 
     vel_y      = 0;
-    gravedad   = 0.5;
-    salto      = 12;
+    gravedad   = 0.2;
+    salto      = 10;
 
-    piso       = 300;
+    piso       = 605;
 
     cam_x      = 0;
 
@@ -55,13 +55,14 @@ void Corredor_bmx::caer(){
 
         y += vel_y;
 
-        if (y >= piso) {
+        if(y >= piso){
 
-            y = piso;
-
+            y     = piso;
             vel_y = 0;
 
             volando = false;
+
+            salto = 10; // reset al valor original
         }
     }
 }
@@ -78,8 +79,8 @@ void Corredor_bmx::saltar(){
 
 void Corredor_bmx::intobj(short act, float x_){
     switch(act){
-    case 1: // cohete — aumenta la fuerza del salto temporalmente
-        salto += 6;
+    case 5:
+        salto += 3;
         break;
     default:
         break;
@@ -87,14 +88,17 @@ void Corredor_bmx::intobj(short act, float x_){
 }
 
 void Corredor_bmx::acelerar(bool der, bool iz){
+    if(volando) return; // en el aire velocidad constante
+
     if(!der && !iz){
 
         vel = vel * 0.987;
     }
     else if(der && !iz){
-        vel = vel * 1.2;
-        if(vel > velmax){
 
+        vel = vel * 1.2;
+
+        if(vel > velmax) {
             vel = velmax;
         }
         else if(vel == 0){
@@ -102,19 +106,20 @@ void Corredor_bmx::acelerar(bool der, bool iz){
             vel = 0.5;
         }
     }
-    else if(!der && iz && !volando){
+    else if(iz && !volando){
         vel = vel * 0.9;
-        if(vel < 0.5) vel = 0;
+
+        if(vel < 0.5){
+
+            vel = 0;
+        }
+
     }
+
 }
 
 void Corredor_bmx::estavolando(bool colision){
-    if(!colision && y < piso){
-
-        volando = true;
-    }
-    else if(colision) {
-
+    if(colision){
         volando = false;
     }
 }
@@ -138,4 +143,19 @@ float Corredor_bmx::getX()
 float Corredor_bmx::getY()
 {
     return y;
+}
+
+float Corredor_bmx::getSalto(){
+
+    return salto;
+}
+
+void Corredor_bmx::setSalto(float nuevo)
+{
+    salto = nuevo;
+}
+
+float Corredor_bmx::getVel()
+{
+    return vel;
 }

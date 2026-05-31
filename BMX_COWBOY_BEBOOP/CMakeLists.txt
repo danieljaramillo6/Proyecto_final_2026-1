@@ -35,6 +35,12 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         rampa.h rampa.cpp
         recursos.qrc
         corredor_bmx.h corredor_bmx.cpp
+        rampa_bmx.h rampa_bmx.cpp
+        bmx.h bmx.cpp bmx.ui
+        truco.h truco.cpp
+        jugadorbmx.h jugadorbmx.cpp
+
+
 
     )
 # Define target properties for Android with Qt 6 as:

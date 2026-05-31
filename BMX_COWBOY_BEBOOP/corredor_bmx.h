@@ -54,6 +54,14 @@ public:
     float getX();
 
     float getY();
+
+    float getSalto();
+
+    void setSalto(float nuevo);
+
+    float getVel();
+
+
 };
 
 #endif // CORREDORBMX_H
